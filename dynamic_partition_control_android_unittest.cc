@@ -100,13 +100,15 @@ class DynamicPartitionControlAndroidTest : public ::testing::Test {
   // |slot|.
   void SetMetadata(uint32_t slot,
                    const PartitionSuffixSizes& sizes,
-                   uint32_t partition_attr = 0) {
+                   uint32_t partition_attr = 0,
+                   uint64_t super_size = kDefaultSuperSize) {
     EXPECT_CALL(dynamicControl(),
                 LoadMetadataBuilder(GetSuperDevice(slot), slot, _))
         .Times(AnyNumber())
-        .WillRepeatedly(Invoke([sizes, partition_attr](auto, auto, auto) {
+        .WillRepeatedly(Invoke([=](auto, auto, auto) {
           return NewFakeMetadata(PartitionSuffixSizesToManifest(sizes),
-                                 partition_attr);
+                                 partition_attr,
+                                 super_size);
         }));
   }
 
