@@ -791,7 +791,10 @@ bool DynamicPartitionControlAndroid::UpdatePartitionMetadata(
   builder->RemoveGroupAndPartitions(android::snapshot::kCowGroupName);
 
   const std::string target_suffix = SlotSuffixForSlotNumber(target_slot);
+
+#ifndef TARGET_ENFORCE_AB_OTA_PARTITION_LIST
   DeleteGroupsWithSuffix(builder, target_suffix);
+#endif
 
   uint64_t total_size = 0;
   for (const auto& group : manifest.dynamic_partition_metadata().groups()) {
@@ -824,6 +827,7 @@ bool DynamicPartitionControlAndroid::UpdatePartitionMetadata(
                             partition.new_partition_info().size());
   }
 
+#ifndef TARGET_ENFORCE_AB_OTA_PARTITION_LIST
   for (const auto& group : manifest.dynamic_partition_metadata().groups()) {
     auto group_name_suffix = group.name() + target_suffix;
     if (!builder->AddGroup(group_name_suffix, group.size())) {
@@ -863,7 +867,36 @@ bool DynamicPartitionControlAndroid::UpdatePartitionMetadata(
                 << group_name_suffix << " with size " << partition_size;
     }
   }
+#else
+  for (const auto& group : manifest.dynamic_partition_metadata().groups()) {
+    for (const auto& partition_name : group.partition_names()) {
+      auto partition_sizes_it = partition_sizes.find(partition_name);
+      if (partition_sizes_it == partition_sizes.end()) {
+        // TODO(tbao): Support auto-filling partition info for framework-only
+        // OTA.
+        LOG(ERROR) << "dynamic_partition_metadata contains partition "
+                   << partition_name << " but it is not part of the manifest. "
+                   << "This is not supported.";
+        return false;
+      }
+      uint64_t partition_size = partition_sizes_it->second;
 
+      auto partition_name_suffix = partition_name + target_suffix;
+      Partition* p = builder->FindPartition(partition_name_suffix);
+      if (!p) {
+        LOG(ERROR) << "Cannot find partition " << partition_name_suffix;
+        return false;
+      }
+      if (!builder->ResizePartition(p, partition_size)) {
+        LOG(ERROR) << "Cannot resize partition " << partition_name_suffix
+                   << " to size " << partition_size << ". Not enough space?";
+        return false;
+      }
+      LOG(INFO) << "Updated partition " << partition_name_suffix
+                << " with size " << partition_size;
+    }
+  }
+#endif
   return true;
 }
 
