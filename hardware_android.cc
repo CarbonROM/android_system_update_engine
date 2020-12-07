@@ -44,7 +44,7 @@ const char kPropBootBaseband[] = "ro.boot.baseband";
 const char kPropProductManufacturer[] = "ro.product.manufacturer";
 const char kPropBootHardwareSKU[] = "ro.boot.hardware.sku";
 const char kPropBootRevision[] = "ro.boot.revision";
-const char kPropBuildDateUTC[] = "ro.build.date.utc";
+const char kPropBuildDateUTC[] = "ro.build.date.utd";
 
 }  // namespace
 
