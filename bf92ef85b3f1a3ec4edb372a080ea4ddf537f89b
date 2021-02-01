@@ -17,6 +17,23 @@
       "message": "hey long timr not seen - you might need somethign new here now - e.g. on migration from 10 to 11 oneplus will add new system_ext partition which will fial with only that - you also need https://gerrit.omnirom.org/c/android_system_update_engine/+/39061",
       "revId": "bf92ef85b3f1a3ec4edb372a080ea4ddf537f89b",
       "serverId": "4c0b52a2-b090-4331-a190-b288d812d081"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4f83417f_53493578",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 181
+      },
+      "writtenOn": "2021-02-01T11:43:49Z",
+      "side": 1,
+      "message": "ping me on tg if you need more details",
+      "revId": "bf92ef85b3f1a3ec4edb372a080ea4ddf537f89b",
+      "serverId": "4c0b52a2-b090-4331-a190-b288d812d081"
     }
   ]
 }
